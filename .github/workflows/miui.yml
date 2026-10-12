@@ -100,8 +100,11 @@ jobs:
         set +e
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
-        set -e
-        lunch "twrp_${{ inputs.DEVICE_NAME }}-eng"
+        if [ "${{ inputs.MANIFEST_BRANCH }}" = "14.1" ]; then
+          lunch "twrp_${{ inputs.DEVICE_NAME }}-ap2a-eng"
+        else
+          lunch "twrp_${{ inputs.DEVICE_NAME }}-eng" || lunch "twrp_${{ inputs.DEVICE_NAME }}-ap2a-eng"
+        fi
         mka adbd "${{ inputs.BUILD_TARGET }}image"
 
     - name: Set Release Properties
