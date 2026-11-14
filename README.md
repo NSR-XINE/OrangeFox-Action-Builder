@@ -6,7 +6,7 @@ Compile custom OrangeFox Recovery using GitHub Actions.
 2. Go to the **Actions** tab > select **OrangeFox - Build MIUI / HyperOS** (or **OrangeFox - Build AOSP**) > click **Run workflow**.
 3. Fill or confirm the workflow inputs:
    - **MANIFEST_BRANCH**: `14.1` (supports `14.1`, `12.1`, `11.0`, `16.0`)
-   - **DEVICE_TREE**: `https://github.com/uke-resources/device_xiaomi_uke-ofox`
+   - **DEVICE_TREE**: `https://github.com/NSR-XINE/device_xiaomi_uke-ofox`
    - **DEVICE_TREE_BRANCH**: `fox_14.1`
    - **DEVICE_PATH**: `device/xiaomi/uke`
    - **DEVICE_NAME**: `uke`

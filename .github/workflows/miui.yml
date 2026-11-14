@@ -22,7 +22,7 @@ on:
       DEVICE_TREE:
         description: 'OrangeFox Device Tree'
         required: true
-        default: 'https://github.com/uke-resources/device_xiaomi_uke-ofox'
+        default: 'https://github.com/NSR-XINE/device_xiaomi_uke-ofox'
       DEVICE_TREE_BRANCH:
         description: 'OrangeFox Device Tree Branch'
         required: true
@@ -118,14 +118,28 @@ jobs:
         fi
         echo "DEVICE_TREE_URL=${DEVICE_TREE_URL}" >> $GITHUB_ENV
 
+    - name: Prepare Release Assets
+      run: |
+        mkdir -p "${GITHUB_WORKSPACE}/artifacts"
+        find "${GITHUB_WORKSPACE}/OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}/out" -type f \( \
+          -name "OrangeFox*.img" -o \
+          -name "OrangeFox*.zip" -o \
+          -name "OrangeFox*.zip.md5" -o \
+          -name "recovery.img" -o \
+          -name "boot.img" -o \
+          -name "vendor_boot.img" \
+        \) -exec cp -v {} "${GITHUB_WORKSPACE}/artifacts/" \;
+        if [ -z "$(ls -A "${GITHUB_WORKSPACE}/artifacts")" ]; then
+          echo "::error::No recovery artifacts found in output directory!"
+          exit 1
+        fi
+        ls -lh "${GITHUB_WORKSPACE}/artifacts"
+
     - name: Upload to Release
       uses: softprops/action-gh-release@v2
       with:
-        files: |
-          OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}/out/target/product/${{ inputs.DEVICE_NAME }}/OrangeFox*.img
-          OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}/out/target/product/${{ inputs.DEVICE_NAME }}/OrangeFox*.zip
-          OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}/out/target/product/${{ inputs.DEVICE_NAME }}/recovery.img
-        fail_on_unmatched_files: false
+        files: artifacts/*
+        fail_on_unmatched_files: true
         name: OrangeFox Recovery for ${{ inputs.DEVICE_NAME }} // ${{ env.BUILD_DATE }}
         tag_name: ${{ github.run_id }}
         prerelease: true
